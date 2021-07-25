@@ -141,7 +141,9 @@ class _QuizPageState extends State<QuizPage> {
 }
 
 /*
-question1: 'You can lead a cow down stairs but not up stairs.', false,
-question2: 'Approximately one quarter of human bones are in the feet.', true,
-question3: 'A slug\'s blood is green.', true,
+4 pillars of OOPS:
+1. abstraction
+2. encapsulation
+3. inheritance
+4. polymorphism
 */
