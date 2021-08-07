@@ -44,15 +44,25 @@ class WeatherModel {
     }
   }
 
-  String getMessage(int temp) {
-    if (temp > 25) {
+  String getMessage(int condition, int temperature) {
+    if (condition < 300) {
+      return 'Thunderstorm ⚡';
+    } else if (condition < 400) {
+      return 'Carry an ☔';
+    } else if (condition < 600) {
+      return 'Carry an ☔';
+    } else if (condition < 700) {
+      return 'Its snowing 🌨';
+    } else if (condition < 800) {
+      return 'Be careful';
+    } else if (condition == 800 && temperature > 20) {
       return 'It\'s 🍦 time';
-    } else if (temp > 20) {
-      return 'Time for shorts and 👕';
-    } else if (temp < 10) {
+    } else if (condition == 800 && temperature < 10) {
       return 'You\'ll need 🧣 and 🧤';
+    } else if (condition <= 804) {
+      return 'You might need an ☂';
     } else {
-      return 'Bring a 🧥 just in case';
+      return '🤷‍';
     }
   }
 }
