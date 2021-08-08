@@ -3,7 +3,7 @@ import 'coin_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 
-const apiKey = '92700863-2230-4748-B097-84AAF2C47447';
+const apiKey = 'C7F93412-CB77-457C-AF1A-F09B886A8E58';
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -11,8 +11,9 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
+  int rate;
   String selectedCurrency = 'USD';
-  String url = 'https://rest.coinapi.io/v1/exchangerate/BTC/USD?apikey=$apiKey';
+  String url;
 
   // for android
   DropdownButton<String> getDropDownItems() {
@@ -32,10 +33,10 @@ class _PriceScreenState extends State<PriceScreen> {
       items: dropDownItems,
       onChanged: (value) {
         setState(() {
-          selectedCurrency = value;
-          url =
-              "https://rest.coinapi.io/v1/exchangerate/BTC/$selectedCurrency?apikey=$apiKey";
-          getCoinData();
+          setState(() {
+            selectedCurrency = value;
+            cardCreator();
+          });
         });
       },
     );
@@ -53,10 +54,12 @@ class _PriceScreenState extends State<PriceScreen> {
       backgroundColor: Colors.lightBlue,
       itemExtent: 32.0,
       onSelectedItemChanged: (selectedItem) {
-        selectedCurrency = currenciesList[selectedItem];
-        url =
-            "https://rest.coinapi.io/v1/exchangerate/BTC/$selectedCurrency?apikey=$apiKey";
-        getCoinData();
+        setState(() {
+          setState(() {
+            selectedCurrency = currenciesList[selectedItem];
+            cardCreator();
+          });
+        });
       },
       children: pickerItems,
     );
@@ -70,29 +73,53 @@ class _PriceScreenState extends State<PriceScreen> {
     }
   }
 
-  String bitCurrency;
-  String norCurrency;
-  int rate;
-
   @override
   void initState() {
     super.initState();
-    getCoinData();
+    cardCreator();
   }
 
-  void getCoinData() async {
+  Future getCoinData(String bitC, String selC) async {
+    url = "https://rest.coinapi.io/v1/exchangerate/$bitC/$selC?apikey=$apiKey";
     CoinData cd = CoinData(url: url);
     var coinData = await cd.getCoinData();
+    // print(coinData);
     updateUI(coinData);
   }
 
   void updateUI(dynamic coinData) {
-    setState(() {
-      bitCurrency = coinData['asset_id_base'];
-      norCurrency = coinData['asset_id_quote'];
-      double r = coinData['rate'];
-      rate = r.toInt();
-    });
+    double r = coinData['rate'];
+    rate = r.toInt();
+  }
+
+  List<Widget> cards = [];
+
+  void cardCreator() async {
+    cards = [];
+    for (String bit in cryptoList) {
+      await getCoinData(bit, selectedCurrency);
+      print('1 $bit = $rate $selectedCurrency');
+      var newItem = Card(
+        color: Color(0xFF616161),
+        elevation: 5.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+          child: Text(
+            '1 $bit = $rate $selectedCurrency',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      );
+      cards.add(newItem);
+    }
+    setState(() {});
   }
 
   @override
@@ -113,22 +140,10 @@ class _PriceScreenState extends State<PriceScreen> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: Card(
-              color: Color(0xFF616161),
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-                child: Text(
-                  '1 $bitCurrency = $rate $norCurrency',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                  ),
-                ),
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: cards,
               ),
             ),
           ),
@@ -136,7 +151,8 @@ class _PriceScreenState extends State<PriceScreen> {
             height: 150.0,
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
-            color: Color(0xFF616161),
+            color: Color(0xFF424242),
+            // Color(0xFF616161)
             child: getList(),
           ),
         ],
@@ -144,3 +160,18 @@ class _PriceScreenState extends State<PriceScreen> {
     );
   }
 }
+
+/* other way of doing this: 
+
+  (with for loop)
+    make three cards under the scaffold ... and in the cardCreator() funciton...
+    instead of making the cards ... just store the rates(of all three currencies) inside 
+    a list and print those rates in the cards using that list
+
+    or 
+
+  (without for loop)
+    make three cards and a function to retrieve the data for one currency and now
+    call the function three times for each curreny and then print the rates in the cards 
+    in the scaffold
+*/
