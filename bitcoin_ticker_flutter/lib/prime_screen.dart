@@ -3,6 +3,8 @@ import 'coin_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 
+const apiKey = '92700863-2230-4748-B097-84AAF2C47447';
+
 class PriceScreen extends StatefulWidget {
   @override
   _PriceScreenState createState() => _PriceScreenState();
@@ -10,6 +12,7 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = 'USD';
+  String url = 'https://rest.coinapi.io/v1/exchangerate/BTC/USD?apikey=$apiKey';
 
   // for android
   DropdownButton<String> getDropDownItems() {
@@ -30,6 +33,9 @@ class _PriceScreenState extends State<PriceScreen> {
       onChanged: (value) {
         setState(() {
           selectedCurrency = value;
+          url =
+              "https://rest.coinapi.io/v1/exchangerate/BTC/$selectedCurrency?apikey=$apiKey";
+          getCoinData();
         });
       },
     );
@@ -47,7 +53,10 @@ class _PriceScreenState extends State<PriceScreen> {
       backgroundColor: Colors.lightBlue,
       itemExtent: 32.0,
       onSelectedItemChanged: (selectedItem) {
-        print(selectedItem);
+        selectedCurrency = currenciesList[selectedItem];
+        url =
+            "https://rest.coinapi.io/v1/exchangerate/BTC/$selectedCurrency?apikey=$apiKey";
+        getCoinData();
       },
       children: pickerItems,
     );
@@ -59,6 +68,31 @@ class _PriceScreenState extends State<PriceScreen> {
     } else if (Platform.isIOS) {
       return getiOSPicker();
     }
+  }
+
+  String bitCurrency;
+  String norCurrency;
+  int rate;
+
+  @override
+  void initState() {
+    super.initState();
+    getCoinData();
+  }
+
+  void getCoinData() async {
+    CoinData cd = CoinData(url: url);
+    var coinData = await cd.getCoinData();
+    updateUI(coinData);
+  }
+
+  void updateUI(dynamic coinData) {
+    setState(() {
+      bitCurrency = coinData['asset_id_base'];
+      norCurrency = coinData['asset_id_quote'];
+      double r = coinData['rate'];
+      rate = r.toInt();
+    });
   }
 
   @override
@@ -88,7 +122,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ? USD',
+                  '1 $bitCurrency = $rate $norCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
