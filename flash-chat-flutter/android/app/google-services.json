@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "398961821930",
+    "project_id": "flash-chat-app-b8053",
+    "storage_bucket": "flash-chat-app-b8053.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398961821930:android:2c678ed84bcb3b1731af93",
+        "android_client_info": {
+          "package_name": "co.Nirbhay.flash_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "398961821930-kp5li9d0rs8430pchit2k9cva58vso1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHXv9iwXPu-XWEliBWG88mMGUF1GFqCpw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398961821930-kp5li9d0rs8430pchit2k9cva58vso1v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
