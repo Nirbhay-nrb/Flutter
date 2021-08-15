@@ -18,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFF212121),
       body: showSpinner
           ? Center(
               child: CircularProgressIndicator(),
@@ -29,11 +29,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Hero(
-                    tag: 'logo',
-                    child: Container(
-                      height: 200.0,
-                      child: Image.asset('images/logo.png'),
+                  Flexible(
+                    child: Hero(
+                      tag: 'logo',
+                      child: Container(
+                        height: 200.0,
+                        child: Image.asset('images/logo.png'),
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -42,6 +44,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextField(
                     keyboardType: TextInputType.emailAddress,
                     textAlign: TextAlign.center,
+                    cursorColor: Colors.black54,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
                     onChanged: (value) {
                       email = value;
                     },
@@ -53,7 +59,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   TextField(
                     textAlign: TextAlign.center,
+                    cursorColor: Colors.black54,
                     obscureText: true,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
                     onChanged: (value) {
                       password = value;
                     },

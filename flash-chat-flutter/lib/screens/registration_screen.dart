@@ -18,7 +18,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFF212121),
       body: showSpinner
           ? Center(
               child: CircularProgressIndicator(),
@@ -29,11 +29,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Hero(
-                    tag: 'logo',
-                    child: Container(
-                      height: 200.0,
-                      child: Image.asset('images/logo.png'),
+                  Flexible(
+                    child: Hero(
+                      tag: 'logo',
+                      child: Container(
+                        height: 200.0,
+                        child: Image.asset('images/logo.png'),
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -42,6 +44,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   TextField(
                     keyboardType: TextInputType.emailAddress,
                     textAlign: TextAlign.center,
+                    cursorColor: Colors.black54,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
                     onChanged: (value) {
                       email = value;
                     },
@@ -54,6 +60,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   TextField(
                     textAlign: TextAlign.center,
                     obscureText: true,
+                    cursorColor: Colors.black54,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
                     onChanged: (value) {
                       password = value;
                     },
