@@ -78,14 +78,21 @@ class _ChatScreenState extends State<ChatScreen> {
                   FlatButton(
                     onPressed: () {
                       messageTextController.clear();
+                      var time = TimeOfDay.now();
+                      var period =
+                          time.hour > TimeOfDay.hoursPerDay ? 'am' : 'pm';
+                      var minute = time.minute.toString();
+                      if (minute.length < 2) {
+                        minute = '0' + minute;
+                      }
+                      var formattedTime = '${time.hourOfPeriod}:$minute$period';
+                      print(minute.toString());
                       _firestore.collection('messages').add({
                         'text': messageText,
                         'sender': loggedInUser.email,
                         'time': DateTime.now().toIso8601String(),
-                        // 'timeToBeDisplayed': DateTime.now(),
+                        'timeToBeDisplayed': formattedTime,
                       });
-                      // final time = DateTime.now();
-                      // print('${time.hour}:${time.minute}');
                     },
                     child: Text(
                       'Send',
@@ -124,12 +131,11 @@ class MessageStream extends StatelessWidget {
           final messageData = message.data() as Map<String, dynamic>;
           final messageText = messageData['text'];
           final messageSender = messageData['sender'];
-          // final messageTime = messageData['timeToBeDisplayed'];
+          final messageTime = messageData['timeToBeDisplayed'];
 
           final currentUser = loggedInUser.email;
           final messageBubble = MessageBubble(
-            // time: messageTime.toString(),
-            // '${messageTime.hour}:${messageTime.minute}'
+            time: messageTime.toString(),
             text: messageText,
             sender: messageSender,
             isMe: currentUser == messageSender,
@@ -149,11 +155,11 @@ class MessageStream extends StatelessWidget {
 }
 
 class MessageBubble extends StatelessWidget {
-  MessageBubble({this.sender, this.text, this.isMe});
+  MessageBubble({this.sender, this.text, this.isMe, this.time});
   final String sender;
   final String text;
   final bool isMe;
-  // final String time;
+  final String time;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -162,12 +168,30 @@ class MessageBubble extends StatelessWidget {
         crossAxisAlignment:
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          Text(
-            sender,
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 12,
-            ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(
+                sender,
+                style: TextStyle(
+                  color: Colors.grey.shade400,
+                  fontSize: 14,
+                ),
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                time,
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                  color: Colors.grey.shade300,
+                  fontSize: 12,
+                ),
+              ),
+            ],
           ),
           SizedBox(
             height: 2,
@@ -191,16 +215,12 @@ class MessageBubble extends StatelessWidget {
               child: Text(
                 text,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 17,
                   color: Colors.black,
                 ),
               ),
             ),
           ),
-          // Text(
-          //   time,
-          //   style: TextStyle(color: Colors.white),
-          // ),
         ],
       ),
     );
